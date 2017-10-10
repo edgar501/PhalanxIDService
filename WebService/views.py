@@ -1,12 +1,29 @@
 import json
+import logging
 from collections import OrderedDict
 
 from django.db import IntegrityError
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic import ListView
 
 from WebService.models import PhalanxIDDataModel
 from WebService.serializers import PhalanxIDSerializer
 from rest_framework import generics
+
+logger = logging.getLogger('phalanx_id')
+
+
+class PhalanxDataDisplayView(ListView):
+    model = PhalanxIDDataModel
+
+    def get_context_data(self, **kwargs):
+        context = super(PhalanxDataDisplayView, self).get_context_data(**kwargs)
+        context['phalanx_info'] = PhalanxIDDataModel.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'phalanx_table.html')
 
 
 class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -64,6 +81,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
     serializer_class = PhalanxIDSerializer
 
     def post(self, request, *args, **kwargs):
+        logger.info("POST request received {}".format(request.data))
         phalanx_id = request.data.get('phalanx_id', None)
         phalanx_uid = request.data.get('phalanx_uid', None)
         get_pk = request.data.get('get_pk', None)
@@ -81,10 +99,19 @@ class PhalanxIDView(generics.ListCreateAPIView):
                 try:
                     exists = PhalanxIDDataModel.objects.get(phalanx_uid=phalanx_uid)
                 except PhalanxIDDataModel.DoesNotExist:
-                    exists = 0
+                    exists = None
 
                 if exists:
-                    response = {'status': 'ERROR, UID ALREADY EXISTS'}
+                    response = OrderedDict()
+                    response['status'] = 'ERROR, UID ALREADY EXISTS'
+                    response['phalanx_uid'] = phalanx_uid
+                    response['phalanx_id'] = exists.phalanx_id
+                    response['uart_test'] = exists.uart_test
+                    response['gpio_test'] = exists.gpio_test
+                    response['radio_test'] = exists.radio_test
+                    response['sender_rssi'] = exists.sender_rssi
+                    response['receiver_rssi'] = exists.receiver_rssi
+                    response['timestamp'] = exists.timestamp
                     return HttpResponse(json.dumps(response), content_type="application/json")
 
                 serializer = PhalanxIDSerializer(data=request.data)

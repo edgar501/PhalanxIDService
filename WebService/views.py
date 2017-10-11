@@ -122,6 +122,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
                     return HttpResponse(json.dumps(response), content_type="application/json")
 
                 serializer = PhalanxIDSerializer(data=request.data)
+                logger.debug("Serializer data {}".format(serializer))
                 if serializer.is_valid():
                     logger.debug("Phalanx ID created {}".format(phalanx_id))
                     state = "PHALANX_ID ASSIGNED"

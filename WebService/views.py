@@ -31,6 +31,7 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PhalanxIDSerializer
 
     def update(self, request, *args, **kwargs):
+        logger.info("Update request received")
         try:
             obj = PhalanxIDDataModel.objects.get(pk=self.kwargs['pk'])
         except PhalanxIDDataModel.DoesNotExist:
@@ -59,6 +60,7 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             obj.receiver_rssi = receiver_rssi
             obj.timestamp = timestamp
             obj.save()
+            logger.debug("Phalanx ID obj {} updated".format(obj.phalanx_id))
             response = OrderedDict()
             response['status'] = 'PHALANX_ID UPDATED {}'.format(obj.phalanx_id)
             return HttpResponse(json.dumps(response), content_type="application/json")
@@ -66,8 +68,10 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             return HttpResponse(json.dumps("ERR_PHALANX_ID_NOT_FOUND"), content_type="application/json")
 
     def delete(self, request, *args, **kwargs):
+        logger.info("Delete request received")
         try:
             obj = PhalanxIDDataModel.objects.get(pk=self.kwargs['pk'])
+            logger.debug("Phalanx ID obj {} deleted".format(obj.phalanx_id))
         except PhalanxIDDataModel.DoesNotExist:
             obj = None
         response = OrderedDict()
@@ -92,12 +96,14 @@ class PhalanxIDView(generics.ListCreateAPIView):
             phalanx_uid = phalanx_uid.upper()
 
             if phalanx_id == 'FFFFFFFF' or phalanx_id == '0XFFFFFFFF':
+                logger.info("Generate id, uid received={}".format(phalanx_uid))
                 phalanx_id = self._generate_id()
                 # phalanx_uid = int(phalanx_uid, 16)
                 # phalanx_uid = "{0:#0{1}x}".format(phalanx_uid, 10)
                 # Check uid uniqueness
                 try:
                     exists = PhalanxIDDataModel.objects.get(phalanx_uid=phalanx_uid)
+                    logger.debug("The phalanx_uid already exists {}".format(phalanx_uid))
                 except PhalanxIDDataModel.DoesNotExist:
                     exists = None
 
@@ -116,6 +122,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
 
                 serializer = PhalanxIDSerializer(data=request.data)
                 if serializer.is_valid():
+                    logger.debug("Phalanx ID created {}".format(phalanx_id))
                     state = "PHALANX_ID ASSIGNED"
                     try:
                         serializer.save(phalanx_id=phalanx_id, phalanx_uid=phalanx_uid)
@@ -144,12 +151,14 @@ class PhalanxIDView(generics.ListCreateAPIView):
             # Second case, check if is correct
             try:
                 obj = PhalanxIDDataModel.objects.get(phalanx_id=phalanx_id)
+                logger.info("Phalanx ID exists {}".format(phalanx_id))
             except PhalanxIDDataModel.DoesNotExist:
                 obj = None
 
             if obj:
                 # Check its uid
                 if phalanx_uid == obj.phalanx_uid:
+                    logger.debug("Phalanx ID {} and UID {} correct.".format(phalanx_id, phalanx_uid))
                     state = 'PHALANX_ID EXISTS WITH CORRECT UID'
                     response = OrderedDict()
                     response['phalanx_id'] = phalanx_id
@@ -163,6 +172,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
                     response['status'] = state
                 else:
                     state = 'PHALANX_ID EXISTS WITH INCORRECT UID'
+                    logger.debug("Phalanx ID {} and UID {} incorrect.".format(phalanx_id, phalanx_uid))
                     response = OrderedDict()
                     response['phalanx_id'] = phalanx_id
                     response['phalanx_uid'] = phalanx_uid + " Correct uid: {}".format(
@@ -181,13 +191,16 @@ class PhalanxIDView(generics.ListCreateAPIView):
                 # Third case, just save it
                 serializer = PhalanxIDSerializer(data=response_dict)
                 if serializer.is_valid():
+                    logger.debug("Phalanx ID and UID saved".format(phalanx_id, phalanx_uid))
                     state = 'PHALANX_ID and UID REGISTERED'
                     serializer.save(phalanx_id=phalanx_id, phalanx_uid=phalanx_uid)
                     response = response_dict
                     response['status'] = state
                 else:
+                    logger.exception("Something happened Phalanx ID {} and UID {}".format(phalanx_id, phalanx_uid))
                     response = OrderedDict()
                     response['status'] = 'ERROR, UID ALREADY EXISTS'
+                    response['phalanx_uid'] = phalanx_uid
                     return HttpResponse(json.dumps(response), content_type="application/json")
 
             return HttpResponse(json.dumps(response), content_type="application/json")
@@ -242,6 +255,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
 
     @staticmethod
     def _generate_id():
+        logger.info("Generating ID")
         list_id = []
         try:
             numbers = PhalanxIDDataModel.objects.all()
@@ -256,4 +270,5 @@ class PhalanxIDView(generics.ListCreateAPIView):
             phalanx_id = "{0:#0{1}x}".format(phalanx_id, 10)
         else:
             phalanx_id = "{0:#0{1}x}".format(1, 10)
+            logger.debug("Phalanx ID {} generated".format(phalanx_id))
         return phalanx_id

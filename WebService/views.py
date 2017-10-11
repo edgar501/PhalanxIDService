@@ -62,7 +62,7 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             obj.save()
             logger.debug("Phalanx ID obj {} updated".format(obj.phalanx_id))
             response = OrderedDict()
-            response['status'] = 'PHALANX_ID UPDATED {}'.format(obj.phalanx_id)
+            response['status'] = 'PHALANX_ID UPDATED'
             return HttpResponse(json.dumps(response), content_type="application/json")
         else:
             return HttpResponse(json.dumps("ERR_PHALANX_ID_NOT_FOUND"), content_type="application/json")
@@ -75,7 +75,7 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         except PhalanxIDDataModel.DoesNotExist:
             obj = None
         response = OrderedDict()
-        response['status'] = "PHALANX_ID DELETED {}".format(obj.phalanx_id)
+        response['status'] = "PHALANX_ID DELETED"
         obj.delete()
         return HttpResponse(json.dumps(response), content_type="application/json")
 

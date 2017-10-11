@@ -5,7 +5,7 @@ from collections import OrderedDict
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import View
 
 from WebService.models import PhalanxIDDataModel
 from WebService.serializers import PhalanxIDSerializer
@@ -14,16 +14,17 @@ from rest_framework import generics
 logger = logging.getLogger('phalanx_id')
 
 
-class PhalanxDataDisplayView(ListView):
+class PhalanxDataDisplayView(View):
+    template_name = 'phalanx_table.html'
     model = PhalanxIDDataModel
+
+    def get(self,request):
+        return render(request, 'phalanx_table.html', context={'phalanx_info': PhalanxIDDataModel.objects.all()})
 
     def get_context_data(self, **kwargs):
         context = super(PhalanxDataDisplayView, self).get_context_data(**kwargs)
         context['phalanx_info'] = PhalanxIDDataModel.objects.all()
         return context
-
-    def get(self, request, *args, **kwargs):
-        return render(request, 'phalanx_table.html')
 
 
 class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):

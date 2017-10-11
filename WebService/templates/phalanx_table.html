@@ -1,0 +1,47 @@
+{% block tittle %} Phalanx ID List {% endblock tittle %}
+
+{% block projet_content %}
+
+<div class="row">
+    <div class="col-xs-12" id="tableWrapper" style="margin-top: 50px; position: relative">
+        <table id="phalanx_id" class="table table-striped">
+            <thead class="users-table-header">
+            <tr>
+                <th class="text-left">Phalanx ID</th>
+                <th class="text-left">Phalanx UID</th>
+                <th class="text-left">Uart Test</th>
+                <th class="text-left">GPIO Test</th>
+                <th class="text-left">Radio Test</th>
+                <th class="text-left">Sender rssi</th>
+                <th class="text-left">Receiver rssi</th>
+                <th class="text-left">Timestamp</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for phalanx_object in phalanx_info %}
+                <tr class="users-table-row">
+                    <td class="col-md-4"> {{ phalanx_object.phalanx_id }} </td>
+                    <td class="col-md-4"> {{ phalanx_object.phalanx_uid }} </td>
+                    <td class="col-md-4"> {{ phalanx_object.uart_test }} </td>
+                    <td class="col-md-4"> {{ phalanx_object.gpio_test }} </td>
+                    <td class="col-md-4"> {{ phalanx_object.radio_test }} </td>
+                    <td class="col-md-4"> {{ phalanx_object.sender_rssi }} </td>
+                    <td class="col-md-4"> {{ phalanx_object.receiver_rssi }} </td>
+                    <td class="col-md-4"> {{ phalanx_object.timestamp }} </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock projet_content %}
+
+
+
+
+
+
+
+

@@ -98,6 +98,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
             if phalanx_id == 'FFFFFFFF' or phalanx_id == '0XFFFFFFFF':
                 logger.info("Generate id, uid received={}".format(phalanx_uid))
                 phalanx_id = self._generate_id()
+                logger.info("Phalanx ID created!!")
                 # phalanx_uid = int(phalanx_uid, 16)
                 # phalanx_uid = "{0:#0{1}x}".format(phalanx_uid, 10)
                 # Check uid uniqueness
@@ -260,12 +261,15 @@ class PhalanxIDView(generics.ListCreateAPIView):
         try:
             numbers = PhalanxIDDataModel.objects.all()
         except PhalanxIDDataModel.DoesNotExist:
+            logger.warning("There are no id's in the database")
             numbers = None
         if numbers:
             for number in numbers:
                 list_id.append(number.phalanx_id)
 
+            logger.debug("Generating ID, List of numbers {}".format(list_id))
             last_id = int(max(list_id), 16)
+            logger.debug("Generating ID, Last id {}".format(last_id))
             phalanx_id = last_id + 1
             phalanx_id = "{0:#0{1}x}".format(phalanx_id, 10)
         else:

@@ -264,13 +264,17 @@ class PhalanxIDView(generics.ListCreateAPIView):
             for number in numbers:
                 list_id.append(number.phalanx_id)
 
+            list_id.append("00010000")
+
             logger.debug("Generating ID, List of numbers {}".format(list_id))
             last_id = int(max(list_id), 16)
             logger.debug("Generating ID, Last id {}".format(last_id))
             phalanx_id = last_id + 1
-            phalanx_id = "{0:#0{1}}".format(phalanx_id, 8)
-            phalanx_id.zfill(8)
+            phalanx_id = format(phalanx_id, 'x')
+            # phalanx_id = "{0:#0{1}}".format(int(phalanx_id, 16), 8)
+            # phalanx_id.zfill(8)
+
         else:
             phalanx_id = "{0:#0{1}}".format(1, 8)
             logger.debug("Phalanx ID {} generated".format(phalanx_id))
-        return phalanx_id
+        return phalanx_id.zfill(8)

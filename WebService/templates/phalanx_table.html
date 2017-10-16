@@ -27,6 +27,12 @@
         </div>
     </header>
 
+<style>
+    #example th:nth-child(1){
+    width: 5%;
+}
+</style>
+
 
 
     <div>
@@ -34,6 +40,7 @@
             <table id="example" class="display" cellspacing="0" width="100%">
                 <thead class="mdl-data-table__cell--non-numeric">
                 <tr>
+                    <th class="text-left">Database pk</th>
                     <th class="text-left">Phalanx ID</th>
                     <th class="text-left">Phalanx UID</th>
                     <th class="text-left">Uart Test</th>
@@ -47,6 +54,7 @@
                 <tbody>
                 {% for phalanx_object in phalanx_info %}
                     <tr class="mdl-data-table__cell--non-numeric">
+                        <td> {{ phalanx_object.pk }} </td>
                         <td> {{ phalanx_object.phalanx_id }} </td>
                         <td> {{ phalanx_object.phalanx_uid }} </td>
                         <td> {{ phalanx_object.uart_test }} </td>

@@ -205,8 +205,6 @@ class PhalanxIDView(generics.ListCreateAPIView):
 
         elif get_pk:
             phalanx_id = phalanx_id.upper()
-            phalanx_id = int(phalanx_id, 16)
-            phalanx_id = "{0:#0{1}x}".format(phalanx_id, 10)
             try:
                 pk = PhalanxIDDataModel.objects.get(phalanx_id=phalanx_id).pk
             except PhalanxIDDataModel.DoesNotExist:

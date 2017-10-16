@@ -1,15 +1,115 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Phalanx ID Database{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue_grey-blue.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+    <header class="mdl-layout__header">
+        <div class="mdl-layout-icon"></div>
+
+        <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">{% block content-title %}Phalanx ID Data Table{% endblock %}</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+        </div>
+    </header>
+
+
+
+    <div>
+        <div class="col-xs-12" id="tableWrapper" style="margin-top: 50px; position: relative; padding: 10px">
+            <table id="example" class="display" cellspacing="0" width="100%">
+                <thead class="mdl-data-table__cell--non-numeric">
+                <tr>
+                    <th class="text-left">Phalanx ID</th>
+                    <th class="text-left">Phalanx UID</th>
+                    <th class="text-left">Uart Test</th>
+                    <th class="text-left">GPIO Test</th>
+                    <th class="text-left">Radio Test</th>
+                    <th class="text-left">Sender rssi</th>
+                    <th class="text-left">Receiver rssi</th>
+                    <th class="text-left">Timestamp</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for phalanx_object in phalanx_info %}
+                    <tr class="mdl-data-table__cell--non-numeric">
+                        <td> {{ phalanx_object.phalanx_id }} </td>
+                        <td> {{ phalanx_object.phalanx_uid }} </td>
+                        <td> {{ phalanx_object.uart_test }} </td>
+                        <td> {{ phalanx_object.gpio_test }} </td>
+                        <td> {{ phalanx_object.radio_test }} </td>
+                        <td> {{ phalanx_object.sender_rssi }} </td>
+                        <td> {{ phalanx_object.receiver_rssi }} </td>
+                        <td> {{ phalanx_object.timestamp }} </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+    <main class="mdl-layout__content">
+        <div class="mdl-grid">
+            <div id='loading'
+                 class="mdl-cell mdl-cell--12-col mdl-progress mdl-js-progress mdl-progress__indeterminate"
+                 style="display: none;"></div>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+</div>
+
+{% block scripts %}
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                processing: true,
+                ordering: true,
+                scrollX: true
+            });
+        });
+    </script>
+
+
+{% endblock %}
+</body>
+</html>
+
+
+
+
+{% comment %}
 {% block tittle %} Phalanx ID List {% endblock tittle %}
 
-{% block static %}
-    {% load staticfiles %}
-    <link rel="stylesheet"  href={% static "DataTables/DataTables-1.10.16/css/dataTables.bootstrap.css" %}/>
-    <link rel="stylesheet"  href={% static "DataTables/Bootstrap-3.3.7/css/bootstrap.css" %}/>
-    <link rel="stylesheet"  href={% static "DataTables/datatables.min.css" %}/>
-    <script type="text/javascript" src={% static "DataTables/datatables.js" %}></script>
-    <script type="text/javascript" src={% static "DataTables/DataTables-1.10.16/js/dataTables.bootstrap.min.js" %}></script>
-{% endblock %}
-
 {% block projet_content %}
+
+     <link rel="stylesheet"  href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css/">
+    <script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js">
+        $(document).ready(function () {
+            $('#phalanx_id').DataTable();
+        });
+    </script>
+
 
 
     <div class="row">
@@ -55,3 +155,4 @@
 
 
 
+{% endcomment %}

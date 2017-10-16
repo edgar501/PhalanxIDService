@@ -18,13 +18,8 @@ class PhalanxDataDisplayView(View):
     template_name = 'phalanx_table.html'
     model = PhalanxIDDataModel
 
-    def get(self,request):
+    def get(self, request):
         return render(request, 'phalanx_table.html', context={'phalanx_info': PhalanxIDDataModel.objects.all()})
-
-    def get_context_data(self, **kwargs):
-        context = super(PhalanxDataDisplayView, self).get_context_data(**kwargs)
-        context['phalanx_info'] = PhalanxIDDataModel.objects.all()
-        return context
 
 
 class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -273,8 +268,9 @@ class PhalanxIDView(generics.ListCreateAPIView):
             last_id = int(max(list_id), 16)
             logger.debug("Generating ID, Last id {}".format(last_id))
             phalanx_id = last_id + 1
-            phalanx_id = "{0:#0{1}x}".format(phalanx_id, 10)
+            phalanx_id = "{0:#0{1}}".format(phalanx_id, 8)
+            phalanx_id.zfill(8)
         else:
-            phalanx_id = "{0:#0{1}x}".format(1, 10)
+            phalanx_id = "{0:#0{1}}".format(1, 8)
             logger.debug("Phalanx ID {} generated".format(phalanx_id))
         return phalanx_id

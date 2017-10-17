@@ -107,6 +107,8 @@ class PhalanxIDView(generics.ListCreateAPIView):
             phalanx_id = phalanx_id.upper()
             phalanx_uid = phalanx_uid.upper()
 
+            phalanx_id = phalanx_id.zfill(8)
+
             if phalanx_id == 'FFFFFFFF' or phalanx_id == '0XFFFFFFFF':
                 logger.info("Generate id, uid received={}".format(phalanx_uid))
                 phalanx_id = self._generate_id()

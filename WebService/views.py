@@ -110,9 +110,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
             if phalanx_id == 'FFFFFFFF' or phalanx_id == '0XFFFFFFFF':
                 logger.info("Generate id, uid received={}".format(phalanx_uid))
                 phalanx_id = self._generate_id()
-                logger.info("Phalanx ID created!!")
-                # phalanx_uid = int(phalanx_uid, 16)
-                # phalanx_uid = "{0:#0{1}x}".format(phalanx_uid, 10)
+                logger.info("Phalanx ID {} created!!".format(phalanx_id))
                 # Check uid uniqueness
                 try:
                     exists = PhalanxIDDataModel.objects.get(phalanx_uid=phalanx_uid)
@@ -300,13 +298,26 @@ class PhalanxIDView(generics.ListCreateAPIView):
 
             logger.debug("Generating ID, List of numbers {}".format(list_id))
             last_id = int(max(list_id), 16)
-            logger.debug("Generating ID, Last id {}".format(last_id))
+            logger.debug("Generating ID, Last id {}".format(format(last_id, 'x')))
             phalanx_id = last_id + 1
             phalanx_id = format(phalanx_id, 'x')
             # phalanx_id = "{0:#0{1}}".format(int(phalanx_id, 16), 8)
             # phalanx_id.zfill(8)
-
         else:
             phalanx_id = "{0:#0{1}}".format(1, 8)
             logger.debug("Phalanx ID {} generated".format(phalanx_id))
+
+        phalanx_id = phalanx_id.zfill(8)
+
+        # Double check
+        try:
+            exists = PhalanxIDDataModel.objects.get(phalanx_id=phalanx_id)
+        except PhalanxIDDataModel.DoesNotExist:
+            exists = None
+
+        if exists:
+            logger.exception("Something happened phalanx id={}".format(phalanx_id))
+            phalanx_id = int(phalanx_id) + 1
+            phalanx_id = format(phalanx_id, 'x')
+
         return phalanx_id.zfill(8)

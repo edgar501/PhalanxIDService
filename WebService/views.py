@@ -24,6 +24,9 @@ class PhalanxDataDisplayView(View):
             if phalanx.uart_test and phalanx.gpio_test and phalanx.radio_test:
                 phalanx.phalanx_ok = True
                 phalanx.save()
+            else:
+                phalanx.phalanx_ok = False
+                phalanx.save()
         return render(request, 'phalanx_table.html', context={'phalanx_info': PhalanxIDDataModel.objects.all()})
 
 

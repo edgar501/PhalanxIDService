@@ -138,14 +138,24 @@ class PhalanxIDView(generics.ListCreateAPIView):
                 if serializer.is_valid():
                     logger.debug("Phalanx ID created {}".format(phalanx_id))
                     state = "PHALANX_ID ASSIGNED"
+
+                    if uart_test == 'True' or uart_test == 'true':
+                        uart_test = True
+                    if gpio_test == 'True' or gpio_test == 'true':
+                        gpio_test = True
+                    if radio_test == 'True' or radio_test == 'true':
+                        radio_test = True
                     try:
-                        if uart_test == 'true' and gpio_test == 'true' and radio_test == 'true':
+                        if uart_test and gpio_test and radio_test:
                             phalanx_ok = True
                         else:
                             phalanx_ok = False
+
                         serializer.save(phalanx_id=phalanx_id, phalanx_uid=phalanx_uid, phalanx_ok=phalanx_ok)
                     except IntegrityError:
                         response = {"ERROR": "Try again"}
+                        logger.exception(
+                            "Something failed ID={}, UID={}, OK={}".format(phalanx_id, phalanx_uid, phalanx_ok))
                         return HttpResponse(json.dumps(response), content_type="application/json")
                     response = serializer.data
                     response['status'] = state

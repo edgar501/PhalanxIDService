@@ -8,6 +8,7 @@ class PhalanxIDDataModel(models.Model):
     uart_test = models.BooleanField(default=False)
     gpio_test = models.BooleanField(default=False)
     radio_test = models.BooleanField(default=False)
+    phalanx_ok = models.BooleanField(default=False)
     sender_rssi = models.CharField(max_length=100, blank=True, null=True)
     receiver_rssi = models.CharField(max_length=100, blank=True, null=True)
     timestamp = models.CharField(max_length=100, blank=True, null=True)

@@ -41,11 +41,11 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         receiver_rssi = request.data.get('receiver_rssi', None)
         timestamp = request.data.get('timestamp', None)
 
-        if uart_test == 'True':
+        if uart_test == 'True' or uart_test == 'true':
             uart_test = True
-        if gpio_test == 'True':
+        if gpio_test == 'True' or gpio_test == 'true':
             gpio_test = True
-        if radio_test == 'True':
+        if radio_test == 'True' or radio_test == 'true':
             radio_test = True
 
         if obj:
@@ -53,6 +53,13 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             obj.gpio_test = gpio_test
             obj.radio_test = radio_test
             obj.sender_rssi = sender_rssi
+
+            if uart_test and gpio_test and radio_test:
+                phalanx_ok = True
+            else:
+                phalanx_ok = False
+
+            obj.phalanx_ok = phalanx_ok
             obj.receiver_rssi = receiver_rssi
             obj.timestamp = timestamp
             obj.save()
@@ -85,6 +92,10 @@ class PhalanxIDView(generics.ListCreateAPIView):
         phalanx_id = request.data.get('phalanx_id', None)
         phalanx_uid = request.data.get('phalanx_uid', None)
         get_pk = request.data.get('get_pk', None)
+
+        uart_test = request.data.get('uart_test', False)
+        gpio_test = request.data.get('gpio_test', False)
+        radio_test = request.data.get('radio_test', False)
 
         if phalanx_id and phalanx_uid and not get_pk:
             # First case, generate ID.
@@ -123,7 +134,11 @@ class PhalanxIDView(generics.ListCreateAPIView):
                     logger.debug("Phalanx ID created {}".format(phalanx_id))
                     state = "PHALANX_ID ASSIGNED"
                     try:
-                        serializer.save(phalanx_id=phalanx_id, phalanx_uid=phalanx_uid)
+                        if uart_test == 'true' and gpio_test == 'true' and radio_test == 'true':
+                            phalanx_ok = True
+                        else:
+                            phalanx_ok = False
+                        serializer.save(phalanx_id=phalanx_id, phalanx_uid=phalanx_uid, phalanx_ok=phalanx_ok)
                     except IntegrityError:
                         response = {"ERROR": "Try again"}
                         return HttpResponse(json.dumps(response), content_type="application/json")
@@ -139,9 +154,9 @@ class PhalanxIDView(generics.ListCreateAPIView):
             response_dict = OrderedDict()
             response_dict['phalanx_id'] = phalanx_id
             response_dict['phalanx_uid'] = phalanx_uid
-            response_dict['uart_test'] = request.data.get('uart_test', False)
-            response_dict['gpio_test'] = request.data.get('gpio_test', False)
-            response_dict['radio_test'] = request.data.get('radio_test', False)
+            response_dict['uart_test'] = uart_test
+            response_dict['gpio_test'] = gpio_test
+            response_dict['radio_test'] = radio_test
             response_dict['sender_rssi'] = request.data.get('sender_rssi', None)
             response_dict['receiver_rssi'] = request.data.get('receiver_rssi', None)
             response_dict['timestamp'] = request.data.get('timestamp', None)
@@ -191,7 +206,11 @@ class PhalanxIDView(generics.ListCreateAPIView):
                 if serializer.is_valid():
                     logger.debug("Phalanx ID and UID saved".format(phalanx_id, phalanx_uid))
                     state = 'PHALANX_ID and UID REGISTERED'
-                    serializer.save(phalanx_id=phalanx_id, phalanx_uid=phalanx_uid)
+                    if uart_test == 'true' and gpio_test == 'true' and radio_test == 'true':
+                        phalanx_ok = True
+                    else:
+                        phalanx_ok = False
+                    serializer.save(phalanx_id=phalanx_id, phalanx_uid=phalanx_uid, phalanx_ok=phalanx_ok)
                     response = response_dict
                     response['status'] = state
                 else:

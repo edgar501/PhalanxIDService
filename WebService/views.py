@@ -19,6 +19,11 @@ class PhalanxDataDisplayView(View):
     model = PhalanxIDDataModel
 
     def get(self, request):
+        all_phalanx = PhalanxIDDataModel.objects.all()
+        for phalanx in all_phalanx:
+            if phalanx.uart_test and phalanx.gpio_test and phalanx.radio_test:
+                phalanx.phalanx_ok = True
+                phalanx.save()
         return render(request, 'phalanx_table.html', context={'phalanx_info': PhalanxIDDataModel.objects.all()})
 
 

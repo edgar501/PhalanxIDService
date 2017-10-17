@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue_grey-blue.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     {% block stylesheets %}{% endblock %}
 </head>
 
@@ -61,7 +65,12 @@
                         <td> {{ phalanx_object.uart_test }} </td>
                         <td> {{ phalanx_object.gpio_test }} </td>
                         <td> {{ phalanx_object.radio_test }} </td>
-                        <td> {{ phalanx_object.phalanx_ok }} </td>
+                        {% if phalanx_object.phalanx_ok %}
+                            <td><span class="glyphicon glyphicon-ok"></span></td>
+                        {% else %}
+                            <td><span class="glyphicon glyphicon-remove"></span></td>
+                        {% endif %}
+{#                        <td> {{ phalanx_object.phalanx_ok }} </td>#}
                         <td> {{ phalanx_object.sender_rssi }} </td>
                         <td> {{ phalanx_object.receiver_rssi }} </td>
                         <td> {{ phalanx_object.timestamp }} </td>

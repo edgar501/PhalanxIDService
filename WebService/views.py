@@ -246,6 +246,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
             return HttpResponse(json.dumps(response), content_type="application/json")
 
         elif get_pk:
+            logger.info("Get PK request received, ID={}".format(phalanx_id))
             phalanx_id = phalanx_id.upper()
             try:
                 pk = PhalanxIDDataModel.objects.get(phalanx_id=phalanx_id).pk
@@ -318,6 +319,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
             logger.debug("Phalanx ID {} generated".format(phalanx_id))
 
         phalanx_id = phalanx_id.zfill(8)
+        phalanx_id = phalanx_id.upper()
 
         # Double check
         try:

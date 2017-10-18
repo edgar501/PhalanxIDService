@@ -48,6 +48,8 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         sender_rssi = request.data.get('sender_rssi', None)
         receiver_rssi = request.data.get('receiver_rssi', None)
         timestamp = request.data.get('timestamp', None)
+        firmware_name = request.data.get('firmware_name', None)
+        firmware_version = request.data.get('firmware_version', None)
 
         if uart_test == 'True' or uart_test == 'true':
             uart_test = True
@@ -70,6 +72,8 @@ class PhalanxIDUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             obj.phalanx_ok = phalanx_ok
             obj.receiver_rssi = receiver_rssi
             obj.timestamp = timestamp
+            obj.firmware_name = firmware_name
+            obj.firmware_version = firmware_version
             obj.save()
             logger.debug("Phalanx ID obj {} updated".format(obj.phalanx_id))
             response = OrderedDict()
@@ -178,6 +182,7 @@ class PhalanxIDView(generics.ListCreateAPIView):
             response_dict['sender_rssi'] = request.data.get('sender_rssi', None)
             response_dict['receiver_rssi'] = request.data.get('receiver_rssi', None)
             response_dict['timestamp'] = request.data.get('timestamp', None)
+            response_dict['firmware_name'] =request.data.get('firmware_name', None)
 
             # Second case, check if is correct
             try:

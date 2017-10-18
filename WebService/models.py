@@ -12,4 +12,5 @@ class PhalanxIDDataModel(models.Model):
     sender_rssi = models.CharField(max_length=100, blank=True, null=True)
     receiver_rssi = models.CharField(max_length=100, blank=True, null=True)
     timestamp = models.CharField(max_length=100, blank=True, null=True)
-
+    firmware_name = models.CharField(max_length=100, blank=True, null=True)
+    firmware_version = models.CharField(max_length=100, blank=True, null=True)

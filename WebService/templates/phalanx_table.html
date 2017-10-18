@@ -44,36 +44,40 @@
             <table id="example" class="display" cellspacing="0" width="100%">
                 <thead class="mdl-data-table__cell--non-numeric">
                 <tr>
-                    <th class="text-left">Database pk</th>
-                    <th class="text-left">Phalanx ID</th>
-                    <th class="text-left">Phalanx UID</th>
-                    <th class="text-left">Uart Test</th>
-                    <th class="text-left">GPIO Test</th>
-                    <th class="text-left">Radio Test</th>
-                    <th class="text-left">Phalanx ok?</th>
-                    <th class="text-left">Sender rssi</th>
-                    <th class="text-left">Receiver rssi</th>
-                    <th class="text-left">Timestamp</th>
+                    <th class="text-center">Database pk</th>
+                    <th class="text-center">Phalanx ID</th>
+                    <th class="text-center">Phalanx UID</th>
+                    <th class="text-center">Uart Test</th>
+                    <th class="text-center">GPIO Test</th>
+                    <th class="text-center">Radio Test</th>
+                    <th class="text-center">Phalanx ok?</th>
+                    <th class="text-center">Sender rssi</th>
+                    <th class="text-center">Receiver rssi</th>
+                    <th class="text-center">Timestamp</th>
+                    <th class="text-center">Firmware Name</th>
+                    <th class="text-center">Firmware Version</th>
+
                 </tr>
                 </thead>
                 <tbody>
                 {% for phalanx_object in phalanx_info %}
                     <tr class="mdl-data-table__cell--non-numeric">
-                        <td> {{ phalanx_object.pk }} </td>
-                        <td> {{ phalanx_object.phalanx_id }} </td>
-                        <td> {{ phalanx_object.phalanx_uid }} </td>
-                        <td> {{ phalanx_object.uart_test }} </td>
-                        <td> {{ phalanx_object.gpio_test }} </td>
-                        <td> {{ phalanx_object.radio_test }} </td>
+                        <td class="text-center"> {{ phalanx_object.pk }} </td>
+                        <td class="text-center"> {{ phalanx_object.phalanx_id }} </td>
+                        <td class="text-center"> {{ phalanx_object.phalanx_uid }} </td>
+                        <td class="text-center"> {{ phalanx_object.uart_test }} </td>
+                        <td class="text-center"> {{ phalanx_object.gpio_test }} </td>
+                        <td class="text-center"> {{ phalanx_object.radio_test }} </td>
                         {% if phalanx_object.phalanx_ok %}
-                            <td><span class="glyphicon glyphicon-ok"></span></td>
+                            <td class="text-center"><span class="glyphicon glyphicon-ok"></span></td>
                         {% else %}
-                            <td><span class="glyphicon glyphicon-remove"></span></td>
+                            <td class="text-center"><span class="glyphicon glyphicon-remove"></span></td>
                         {% endif %}
-{#                        <td> {{ phalanx_object.phalanx_ok }} </td>#}
-                        <td> {{ phalanx_object.sender_rssi }} </td>
-                        <td> {{ phalanx_object.receiver_rssi }} </td>
-                        <td> {{ phalanx_object.timestamp }} </td>
+                        <td class="text-center"> {{ phalanx_object.sender_rssi }} </td>
+                        <td class="text-center"> {{ phalanx_object.receiver_rssi }} </td>
+                        <td class="text-center"> {{ phalanx_object.timestamp }} </td>
+                        <td class="text-center">{{ phalanx_object.firmware_name }}</td>
+                        <td class="text-center">{{ phalanx_object.firmware_version }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
